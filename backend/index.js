@@ -29,6 +29,17 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 // run db
 ConnectDb();
 
+
+const importData = require('./seed');
+
+app.get('/api/seed', async (req, res) => {
+  try {
+    await importData();
+    res.send("✅ Data Imported Successfully");
+  } catch (error) {
+    res.status(500).send("❌ Error importing data");
+  }
+});
 // routes
 app.use("/api/products", productsRoutes);
 app.use("/api/category", categoryRoutes);

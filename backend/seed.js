@@ -22,9 +22,10 @@ const brandData = require('./utils/brands');
 const Admin = require('./models/Admin');
 const adminData = require('./utils/admin');
 
-connectDB();
 const importData = async () => {
   try {
+    await connectDB();
+
     await User.deleteMany();
     await User.insertMany(userData);
 
@@ -46,33 +47,13 @@ const importData = async () => {
     await Admin.deleteMany();
     await Admin.insertMany(adminData);
 
-    console.log('data inserted successfully!');
-    process.exit();
+    console.log('✅ data inserted successfully!');
+    
+    return "SUCCESS";   // ✅ important
   } catch (error) {
     console.log('error', error);
-    process.exit(1);
-  }
-};
-const destroyData = async () => {
-  try {
-    await User.deleteMany();
-    await Product.deleteMany();
-    await Category.deleteMany();
-    await Coupon.deleteMany();
-    await Order.deleteMany();
-    await Brand.deleteMany();
-    await Admin.deleteMany();
-
-    console.log("All Data Destroyed!");
-    process.exit();
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
+    throw error;        // ✅ important
   }
 };
 
-if (process.argv[2] === "-d") {
-  destroyData();
-} else {
-  importData();
-}
+module.exports = importData;
